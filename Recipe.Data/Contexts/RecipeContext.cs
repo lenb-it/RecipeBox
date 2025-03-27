@@ -11,9 +11,14 @@ public class RecipeContext(
     DbContextOptions<RecipeContext> options,
     IOptions<AuthorizationOptions> authOptions) : DbContext(options)
 {
-    public DbSet<UserEntity> Users { get; set; } = null!;
-    public DbSet<RoleEntity> Roles { get; set; } = null!;
-    public DbSet<PermissionEntity> Permissions { get; set; } = null!;
+    internal DbSet<UserEntity> Users { get; set; } = null!;
+    internal DbSet<RoleEntity> Roles { get; set; } = null!;
+    internal DbSet<PermissionEntity> Permissions { get; set; } = null!;
+    internal DbSet<RecipeEntity> Recipes { get; set; } = null!;
+    internal DbSet<CategoryEntity> Categories { get; set; } = null!;
+    internal DbSet<IngredientEntity> Ingredients { get; set; } = null!;
+    internal DbSet<TagEntity> Tags { get; set; } = null!;
+    internal DbSet<RecipeRatingEntity> Ratings { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,9 +32,6 @@ public class RecipeContext(
 
         foreach (var entry in entries)
         {
-            if (entry.Entity is not BaseEntity)
-                continue;
-
             if (entry.State == EntityState.Modified)
                 entry.Property(nameof(BaseEntity.UpdateAt)).CurrentValue = DateTime.UtcNow;
 

@@ -28,7 +28,7 @@ internal class UserConfiguration : IEntityTypeConfiguration<UserEntity>
         builder.HasMany(u => u.Roles)
                .WithMany(r => r.Users)
                .UsingEntity<UserRoleEntity>(
-                    r => r.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId),
-                    l => l.HasOne<UserEntity>().WithMany().HasForeignKey(u => u.UserId));
+                    l => l.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId),
+                    r => r.HasOne<UserEntity>().WithMany().HasForeignKey(u => u.UserId));
     }
 }

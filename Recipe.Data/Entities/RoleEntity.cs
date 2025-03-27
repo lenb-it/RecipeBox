@@ -1,6 +1,6 @@
 ﻿namespace Recipe.Data.Entities;
 
-public class RoleEntity
+internal class RoleEntity
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

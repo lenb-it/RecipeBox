@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recipe.Data.Contexts;
 
@@ -11,9 +12,11 @@ using Recipe.Data.Contexts;
 namespace Recipe.Data.Migrations
 {
     [DbContext(typeof(RecipeContext))]
-    partial class RecipeContextModelSnapshot : ModelSnapshot
+    [Migration("20250327204246_addtags")]
+    partial class addtags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,32 +163,6 @@ namespace Recipe.Data.Migrations
                     b.ToTable("Recipes");
                 });
 
-            modelBuilder.Entity("Recipe.Data.Entities.RecipeFavoriteEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RecipeFavoriteEntity");
-                });
-
             modelBuilder.Entity("Recipe.Data.Entities.RecipeIngredientEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -215,38 +192,6 @@ namespace Recipe.Data.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeIngredientEntity");
-                });
-
-            modelBuilder.Entity("Recipe.Data.Entities.RecipeRatingEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("Recipe.Data.Entities.RecipeTagEntity", b =>
@@ -451,25 +396,6 @@ namespace Recipe.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Recipe.Data.Entities.RecipeFavoriteEntity", b =>
-                {
-                    b.HasOne("Recipe.Data.Entities.RecipeEntity", "Recipe")
-                        .WithMany("UserFavorites")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Recipe.Data.Entities.UserEntity", "User")
-                        .WithMany("RecipeFavorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Recipe");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Recipe.Data.Entities.RecipeIngredientEntity", b =>
                 {
                     b.HasOne("Recipe.Data.Entities.IngredientEntity", "Ingredient")
@@ -487,23 +413,6 @@ namespace Recipe.Data.Migrations
                     b.Navigation("Ingredient");
 
                     b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("Recipe.Data.Entities.RecipeRatingEntity", b =>
-                {
-                    b.HasOne("Recipe.Data.Entities.RecipeEntity", "Recipe")
-                        .WithMany("Ratings")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Recipe.Data.Entities.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Recipe");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Recipe.Data.Entities.RecipeTagEntity", b =>
@@ -554,16 +463,10 @@ namespace Recipe.Data.Migrations
             modelBuilder.Entity("Recipe.Data.Entities.RecipeEntity", b =>
                 {
                     b.Navigation("Ingredients");
-
-                    b.Navigation("Ratings");
-
-                    b.Navigation("UserFavorites");
                 });
 
             modelBuilder.Entity("Recipe.Data.Entities.UserEntity", b =>
                 {
-                    b.Navigation("RecipeFavorites");
-
                     b.Navigation("Recipes");
                 });
 #pragma warning restore 612, 618
