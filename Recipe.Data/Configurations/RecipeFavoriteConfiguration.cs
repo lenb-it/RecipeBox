@@ -10,6 +10,7 @@ internal class RecipeFavoriteConfiguration : IEntityTypeConfiguration<RecipeFavo
     public void Configure(EntityTypeBuilder<RecipeFavoriteEntity> builder)
     {
         builder.HasKey(rf => rf.Id);
+        builder.ToTable("RecipeFavorites");
         builder.HasOne(rf => rf.User)
                .WithMany(u => u.RecipeFavorites)
                .IsRequired()

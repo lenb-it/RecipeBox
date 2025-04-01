@@ -10,5 +10,6 @@ internal class RecipeTagConfiguration : IEntityTypeConfiguration<RecipeTagEntity
     public void Configure(EntityTypeBuilder<RecipeTagEntity> builder)
     {
         builder.HasKey(rt => new { rt.RecipeId, rt.TagId });
+        builder.ToTable("RecipeTags");
     }
 }

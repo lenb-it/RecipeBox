@@ -19,6 +19,7 @@ internal class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermis
     public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
     {
         builder.HasKey(ur => new { ur.RoleId, ur.PermissionId });
+        builder.ToTable("RolePermissions");
 
         builder.HasData(ParseRolePermissions());
     }

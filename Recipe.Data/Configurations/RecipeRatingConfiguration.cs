@@ -10,6 +10,7 @@ internal class RecipeRatingConfiguration : IEntityTypeConfiguration<RecipeRating
     public void Configure(EntityTypeBuilder<RecipeRatingEntity> builder)
     {
         builder.HasKey(rr => rr.Id);
+        builder.ToTable("RecipeRatings");
         builder.Property(rr => rr.Rating)
                .IsRequired()
                .HasConversion(
