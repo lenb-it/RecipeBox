@@ -44,8 +44,6 @@ public static class ApiExtensions
 
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-        services.AddAutoMapper(typeof(Data.MappingProfiles.UserProfile).Assembly);
     }
 
     public static void AddValidation(this IServiceCollection services)
