@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using AutoMapper;
+using MapsterMapper;
 
 using Recipe.Core.Enums;
 using Recipe.Core.Models;

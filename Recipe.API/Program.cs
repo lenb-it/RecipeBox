@@ -20,6 +20,7 @@ services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(Authori
 services.AddDbContext(configuration, environment);
 
 services.AddValidation();
+services.AddMappingConfigs();
 services.AddApiRepositories();
 services.AddApiServices();
 services.AddApiAuthentication(configuration);

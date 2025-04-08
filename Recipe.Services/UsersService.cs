@@ -18,7 +18,7 @@ public class UsersService(
         string firstName,
         string lastName)
     {
-        var hashedPassword = passwordHasher.Generate(password);
+        string hashedPassword = passwordHasher.Generate(password);
         var user = User.Create(login, email, hashedPassword, firstName, lastName);
 
         await userRepository.AddAsync(user);
@@ -26,12 +26,19 @@ public class UsersService(
 
     public async Task<string> LoginAsync(string login, string password)
     {
-        var user = await userRepository.GetByLoginAsync(login);
-        var verifyResult = passwordHasher.Verify(password, user.PasswordHash);
+        try
+        {
+            User user = await userRepository.GetByLoginAsync(login);
+            bool verifyResult = passwordHasher.Verify(password, user.PasswordHash);
 
-        if (!verifyResult)
-            throw new BadAuthException("Password don't match");
+            if (!verifyResult)
+                throw new BadAuthException();
 
-        return jwtProvider.GenerateToken(user);
+            return jwtProvider.GenerateToken(user);
+        }
+        catch (BaseException) 
+        {
+            throw new BadAuthException("Login or password don't match");
+        }
     }
 }

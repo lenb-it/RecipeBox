@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using FluentValidation;
+using Mapster;
+using MapsterMapper;
 
 using Recipe.API.Handlers;
 using Recipe.API.EndPoint;
@@ -16,6 +18,7 @@ using Recipe.Services.Interfaces;
 using Recipe.Services.Interfaces.Auth;
 using Recipe.Data.Contexts;
 using Recipe.Data.Repositories;
+using Recipe.Data.MappingProfiles;
 using Recipe.Infrastracture;
 using Recipe.Infrastracture.Constants;
 using Recipe.Infrastracture.Requirements;
@@ -29,6 +32,20 @@ public static class ApiExtensions
     public static void AddMappedEndPoins(this IEndpointRouteBuilder app)
     {
         app.MapUsersEndpoints();
+    }
+
+    public static void AddMappingConfigs(this IServiceCollection services)
+    {
+        var config = new TypeAdapterConfig();
+
+        config.Scan(typeof(UserMappingConfig).Assembly);
+
+        config.Default
+            .IgnoreNullValues(false)
+            .NameMatchingStrategy(NameMatchingStrategy.Exact);
+
+        services.AddSingleton(config);
+        services.AddScoped<IMapper, ServiceMapper>();
     }
 
     public static void AddApiRepositories(this IServiceCollection services)
