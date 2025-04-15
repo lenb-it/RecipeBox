@@ -34,7 +34,7 @@ public static class UserEndpoints
 
     public static async Task<IResult> RegisterAsync(
         [FromBody] RegisterUserRequest request,
-        [FromServices] IUsersService userService,
+        IUsersService userService,
         CancellationToken cancellationToken = default)
     {
         try
@@ -57,7 +57,7 @@ public static class UserEndpoints
 
     public static async Task<IResult> LoginAsync(
         [FromBody] LoginUserRequest request,
-        [FromServices] IUsersService userService,
+        IUsersService userService,
         HttpContext context,
         CancellationToken cancellationToken)
     {

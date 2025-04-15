@@ -11,7 +11,7 @@ public class Recipe
     public short CookingTime { get; set; }
     public short AmountServings { get; set; }
     public double? AverageRating { get; set; } = null!;
-    public ICollection<Tag> Tags { get; set; } = [];
-    public ICollection<Category> Categories { get; set; } = [];
-    public ICollection<RecipeIngredient> Ingredients { get; set; } = [];
+    public List<Tag> Tags { get; set; } = [];
+    public List<Category> Categories { get; set; } = [];
+    public List<RecipeIngredient> Ingredients { get; set; } = [];
 }
