@@ -34,7 +34,8 @@ public static class UserEndpoints
 
     public static async Task<IResult> RegisterAsync(
         [FromBody] RegisterUserRequest request,
-        IUsersService userService)
+        [FromServices] IUsersService userService,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -43,7 +44,8 @@ public static class UserEndpoints
                 request.Email,
                 request.Password,
                 request.FirstName,
-                request.LastName);
+                request.LastName,
+                cancellationToken);
 
             return Results.Ok();
         }
@@ -55,12 +57,16 @@ public static class UserEndpoints
 
     public static async Task<IResult> LoginAsync(
         [FromBody] LoginUserRequest request,
+        [FromServices] IUsersService userService,
         HttpContext context,
-        IUsersService userService)
+        CancellationToken cancellationToken)
     {
         try
         {
-            var token = await userService.LoginAsync(request.Login, request.Password);
+            var token = await userService.LoginAsync(
+                request.Login,
+                request.Password,
+                cancellationToken);
             context.Response.Cookies.Append(CookieConstants.JwtToken, token);
 
             return Results.Ok();

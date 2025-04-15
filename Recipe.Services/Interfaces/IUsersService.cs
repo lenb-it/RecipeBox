@@ -7,7 +7,11 @@ public interface IUsersService
         string email,
         string password,
         string firstName,
-        string lastName);
+        string lastName,
+        CancellationToken cancellationToken = default);
 
-    Task<string> LoginAsync(string login, string password);
+    Task<string> LoginAsync(
+        string login,
+        string password,
+        CancellationToken cancellationToken = default);
 }

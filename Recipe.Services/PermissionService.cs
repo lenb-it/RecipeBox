@@ -7,8 +7,10 @@ namespace Recipe.Services;
 public class PermissionService(IUsersRepository userRepository)
     : IPermissionService
 {
-    public async Task<HashSet<Permission>> GetPermissionsAsync(Guid userId)
+    public async Task<HashSet<Permission>> GetPermissionsAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
     {
-        return await userRepository.GetUserPermissionsAsync(userId);
+        return await userRepository.GetUserPermissionsAsync(userId, cancellationToken);
     }
 }

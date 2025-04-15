@@ -3,7 +3,7 @@
 using Recipe.Core.Models;
 using Recipe.Data.Entities;
 
-namespace Recipe.Data.MappingProfiles;
+namespace Recipe.Data.MappingConfigs;
 
 public class UserMappingConfig : IRegister
 {

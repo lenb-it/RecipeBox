@@ -16,19 +16,23 @@ public class UsersService(
         string email,
         string password,
         string firstName,
-        string lastName)
+        string lastName,
+        CancellationToken cancellationToken = default)
     {
         string hashedPassword = passwordHasher.Generate(password);
         var user = User.Create(login, email, hashedPassword, firstName, lastName);
 
-        await userRepository.AddAsync(user);
+        await userRepository.AddAsync(user, cancellationToken);
     }
 
-    public async Task<string> LoginAsync(string login, string password)
+    public async Task<string> LoginAsync(
+        string login,
+        string password,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            User user = await userRepository.GetByLoginAsync(login);
+            User user = await userRepository.GetByLoginAsync(login, cancellationToken);
             bool verifyResult = passwordHasher.Verify(password, user.PasswordHash);
 
             if (!verifyResult)

@@ -4,5 +4,7 @@ namespace Recipe.Services.Interfaces;
 
 public interface IPermissionService
 {
-    Task<HashSet<Permission>> GetPermissionsAsync(Guid userId);
+    Task<HashSet<Permission>> GetPermissionsAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default);
 }

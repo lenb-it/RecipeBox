@@ -18,7 +18,7 @@ using Recipe.Services.Interfaces;
 using Recipe.Services.Interfaces.Auth;
 using Recipe.Data.Contexts;
 using Recipe.Data.Repositories;
-using Recipe.Data.MappingProfiles;
+using Recipe.Data.MappingConfigs;
 using Recipe.Infrastracture;
 using Recipe.Infrastracture.Constants;
 using Recipe.Infrastracture.Requirements;
