@@ -17,7 +17,6 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
 
     private readonly Type[] NotDetailExceptions =
         [
-            typeof(Exception),
             typeof(SqlException),
             typeof(DbUpdateException),
             typeof(SecurityException),
@@ -31,12 +30,31 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
             typeof(InternalBufferOverflowException),
         ];
 
+    private readonly Type[] CanceledExceptions =
+        [
+            typeof(TaskCanceledException),
+            typeof(OperationCanceledException),
+        ];
+
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
     {
         logger.LogError(exception.Message);
+
+        if (CanceledExceptions.Contains(exception.GetType()))
+        {
+            httpContext.Response.StatusCode = (int)HttpStatusCode.RequestTimeout;
+            await httpContext.Response.WriteAsync(
+                JsonSerializer.Serialize(new
+                {
+                    Message = "Request canceled or timed out",
+                    Details = "The operation was aborted"
+                }),
+                cancellationToken);
+            return true;
+        }
 
         var errorInfo = new
         {
