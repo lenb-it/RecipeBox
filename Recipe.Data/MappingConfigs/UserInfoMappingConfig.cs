@@ -5,13 +5,13 @@ using Recipe.Data.Entities;
 
 namespace Recipe.Data.MappingConfigs;
 
-public class UserMappingConfig : IRegister
+internal class UserInfoMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<UserEntity, User>();
+        config.NewConfig<UserEntity, UserInfo>();
 
-        config.NewConfig<User, UserEntity>()
+        config.NewConfig<UserInfo, UserEntity>()
             .AfterMapping((src, dest) =>
             {
                 if (dest.Roles == null)
