@@ -4,7 +4,7 @@ public class Recipe
 {
     public int Id { get; set; }
     public string Title { get; set; } = null!;
-    public User User { get; set; } = null!;
+    public UserInfo User { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string Instructions { get; set; } = null!;
     public short PreparationTime { get; set; }

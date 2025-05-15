@@ -1,12 +1,14 @@
-﻿using Recipe.Core.Models;
-
-namespace Recipe.Core.Repositories.Interfaces;
+﻿namespace Recipe.Core.Repositories.Interfaces;
 
 public interface IRecipeRepository
 {
-    Task<List<Models.Recipe>> GetPartAsync(
+    Task<IReadOnlyCollection<Models.Recipe>> GetShortInfoPartOfRecipesAsync(
         int startPosition,
         int count,
+        CancellationToken cancellationToken = default);
+
+    Task<Core.Models.Recipe?> GetOrDefaultAsync(
+        int recipeId,
         CancellationToken cancellationToken = default);
 
     Task AddAsync(
@@ -15,5 +17,9 @@ public interface IRecipeRepository
 
     Task UpdateAsync(
         Models.Recipe recipe,
+        CancellationToken cancellationToken = default);
+
+    Task RemoveAsync(
+        int recipeId,
         CancellationToken cancellationToken = default);
 }

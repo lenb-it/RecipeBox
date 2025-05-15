@@ -2,16 +2,21 @@
 
 namespace Recipe.Core.Repositories.Interfaces;
 
-public interface IIngredientRepository
+public interface ITagRepository
 {
-    Task<IReadOnlyCollection<Ingredient>> GetAllAsync(
+    Task<IReadOnlyCollection<Tag>> GetAllAsync(
         CancellationToken cancellationToken = default);
 
     Task AddAsync(
-        Ingredient ingredient,
+        Tag tag,
         CancellationToken cancellationToken = default);
 
     Task UpdateAsync(
-        Ingredient ingredient,
+        Tag tag,
         CancellationToken cancellationToken = default);
+
+    Task DeleteAsync(
+        Tag tag,
+        CancellationToken cancellationToken = default);
+
 }
