@@ -13,6 +13,7 @@ public interface IRecipeRepository
 
     Task AddAsync(
         Models.Recipe recipe,
+        Guid ownerId,
         CancellationToken cancellationToken = default);
 
     Task UpdateAsync(

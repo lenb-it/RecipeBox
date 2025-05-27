@@ -5,6 +5,10 @@ namespace Recipe.Core.Repositories.Interfaces;
 
 public interface IUsersRepository
 {
+    Task<User> GetById(
+        Guid id,
+        CancellationToken cancellationToken = default);
+
     Task<User> GetByLoginAsync(
         string login,
         CancellationToken cancellationToken = default);

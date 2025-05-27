@@ -15,6 +15,18 @@ public class UsersRepository(
     RecipeContext dbContext,
     IMapper mapper) : IUsersRepository
 {
+    public async Task<User> GetById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id, cancellationToken)
+            ?? throw new NotFoundException($"User with id:\'{id}\' not found");
+
+        return mapper.Map<User>(user);
+    }
+
     public async Task<User> GetByLoginAsync(
         string login,
         CancellationToken cancellationToken = default)

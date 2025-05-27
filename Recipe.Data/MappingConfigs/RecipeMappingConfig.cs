@@ -1,5 +1,5 @@
 ﻿using Mapster;
-using Recipe.Core.Models;
+
 using Recipe.Data.Entities;
 
 namespace Recipe.Data.MappingConfigs;
@@ -20,6 +20,8 @@ public class RecipeMappingConfig : IRegister
             {
                 if (dest.UserFavorites is null)
                     dest.UserFavorites = [];
+                if (dest.Ratings is null)
+                    dest.Ratings = [];
             });
         ;
     }

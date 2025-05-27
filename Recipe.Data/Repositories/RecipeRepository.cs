@@ -2,13 +2,17 @@
 
 using Microsoft.EntityFrameworkCore;
 
+using Recipe.Core.Exceptions;
+using Recipe.Core.Models;
 using Recipe.Core.Repositories.Interfaces;
 using Recipe.Data.Contexts;
+using Recipe.Data.Entities;
 
 namespace Recipe.Data.Repositories;
 public class RecipeRepository(
     RecipeContext dbContext,
-    IMapper mapper) : IRecipeRepository
+    IMapper mapper,
+    IUsersRepository userRepository) : IRecipeRepository
 {
     public async Task<IReadOnlyCollection<Core.Models.Recipe>> GetShortInfoPartOfRecipesAsync(
         int startPosition,
@@ -42,11 +46,23 @@ public class RecipeRepository(
         return mapper.Map<Core.Models.Recipe>(recipe);
     }
 
-    public Task AddAsync(
+    // todo check the method for correctness
+    public async Task AddAsync(
         Core.Models.Recipe recipe,
+        Guid ownerId,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var userOwner = await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == ownerId, cancellationToken)
+            ?? throw new NotFoundException($"User with id:\'{ownerId}\' not found");
+
+        var recipeEntity = mapper.Map<RecipeEntity>(recipe);
+        recipeEntity.Id = 0;
+        recipeEntity.User = userOwner;
+
+        await dbContext.Recipes.AddAsync(recipeEntity);
+        await dbContext.SaveChangesAsync();
     }
 
     public Task UpdateAsync(
