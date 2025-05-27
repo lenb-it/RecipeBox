@@ -7,7 +7,7 @@ public interface IRecipeRepository
         int count,
         CancellationToken cancellationToken = default);
 
-    Task<Core.Models.Recipe?> GetOrDefaultAsync(
+    Task<Models.Recipe?> GetOrDefaultAsync(
         int recipeId,
         CancellationToken cancellationToken = default);
 

@@ -51,6 +51,10 @@ public static class ApiExtensions
     public static void AddApiRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUsersRepository, UsersRepository>();
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IIngredientRepository, IngredientRepository>();
     }
 
     public static void AddApiServices(this IServiceCollection services)

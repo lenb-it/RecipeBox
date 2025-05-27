@@ -20,10 +20,10 @@ internal class RecipeRatingConfiguration : IEntityTypeConfiguration<RecipeRating
         builder.HasOne(rr => rr.User)
                .WithMany()
                .IsRequired(false)
-               .OnDelete(DeleteBehavior.ClientSetNull);
+               .OnDelete(DeleteBehavior.SetNull);
         builder.HasOne(rr => rr.Recipe)
                .WithMany(r => r.Ratings)
                .IsRequired()
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.ClientNoAction);
     }
 }

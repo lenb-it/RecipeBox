@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Recipe.Data.Contexts;
 
@@ -11,9 +12,11 @@ using Recipe.Data.Contexts;
 namespace Recipe.Data.Migrations
 {
     [DbContext(typeof(RecipeContext))]
-    partial class RecipeContextModelSnapshot : ModelSnapshot
+    [Migration("20250527173459_recipengredientrestict")]
+    partial class recipengredientrestict
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,7 +186,7 @@ namespace Recipe.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRecipeFavorites", (string)null);
+                    b.ToTable("RecipeFavorites", (string)null);
                 });
 
             modelBuilder.Entity("Recipe.Data.Entities.RecipeIngredientEntity", b =>
@@ -237,7 +240,7 @@ namespace Recipe.Data.Migrations
                     b.Property<DateTime>("UpdateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -456,7 +459,7 @@ namespace Recipe.Data.Migrations
                     b.HasOne("Recipe.Data.Entities.RecipeEntity", "Recipe")
                         .WithMany("UserFavorites")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Recipe.Data.Entities.UserEntity", "User")
@@ -494,13 +497,12 @@ namespace Recipe.Data.Migrations
                     b.HasOne("Recipe.Data.Entities.RecipeEntity", "Recipe")
                         .WithMany("Ratings")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Recipe.Data.Entities.UserEntity", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Recipe");
 

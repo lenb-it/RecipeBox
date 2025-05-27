@@ -31,7 +31,7 @@ internal class RecipeConfiguration : IEntityTypeConfiguration<RecipeEntity>
         builder.HasMany(r => r.Ingredients)
                .WithOne(ri => ri.Recipe)
                .IsRequired()
-               .OnDelete(DeleteBehavior.Restrict);
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(r => r.Categories)
                .WithMany(c => c.Recipes)

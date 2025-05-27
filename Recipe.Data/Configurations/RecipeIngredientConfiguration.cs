@@ -18,8 +18,10 @@ internal class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIn
                .HasMaxLength(50);
 
         builder.HasOne(ri => ri.Ingredient)
-               .WithMany();
+               .WithMany()
+               .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(ri => ri.Recipe)
-               .WithMany(r => r.Ingredients);
+               .WithMany(r => r.Ingredients)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }
