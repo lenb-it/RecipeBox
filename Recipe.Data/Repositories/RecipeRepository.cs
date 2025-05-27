@@ -11,8 +11,7 @@ using Recipe.Data.Entities;
 namespace Recipe.Data.Repositories;
 public class RecipeRepository(
     RecipeContext dbContext,
-    IMapper mapper,
-    IUsersRepository userRepository) : IRecipeRepository
+    IMapper mapper) : IRecipeRepository
 {
     public async Task<IReadOnlyCollection<Core.Models.Recipe>> GetShortInfoPartOfRecipesAsync(
         int startPosition,
