@@ -60,8 +60,8 @@ public class RecipeRepository(
         recipeEntity.Id = 0;
         recipeEntity.User = userOwner;
 
-        await dbContext.Recipes.AddAsync(recipeEntity);
-        await dbContext.SaveChangesAsync();
+        await dbContext.Recipes.AddAsync(recipeEntity, cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public Task UpdateAsync(
@@ -71,10 +71,17 @@ public class RecipeRepository(
         throw new NotImplementedException();
     }
 
-    public Task RemoveAsync(
+    public async Task RemoveAsync(
         int recipeId,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var recipeEntity = await dbContext.Recipes
+            .FirstOrDefaultAsync(r => r.Id == recipeId, cancellationToken);
+
+        if (recipeEntity is null)
+            return;
+
+        dbContext.Recipes.Remove(recipeEntity);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
