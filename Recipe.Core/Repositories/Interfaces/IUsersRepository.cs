@@ -5,7 +5,7 @@ namespace Recipe.Core.Repositories.Interfaces;
 
 public interface IUsersRepository
 {
-    Task<User> GetById(
+    Task<User> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default);
 

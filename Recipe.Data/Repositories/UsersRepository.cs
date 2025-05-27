@@ -15,7 +15,7 @@ public class UsersRepository(
     RecipeContext dbContext,
     IMapper mapper) : IUsersRepository
 {
-    public async Task<User> GetById(
+    public async Task<User> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
