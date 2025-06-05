@@ -20,6 +20,7 @@ public class RecipeMappingConfig : IRegister
             {
                 if (dest.UserFavorites is null)
                     dest.UserFavorites = [];
+
                 if (dest.Ratings is null)
                     dest.Ratings = [];
             });

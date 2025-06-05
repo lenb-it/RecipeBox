@@ -64,11 +64,91 @@ public class RecipeRepository(
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public Task UpdateAsync(
+    // todo check the method for correctness
+    public async Task UpdateAsync(
         Core.Models.Recipe recipe,
         CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var recipeEntity = await dbContext.Recipes
+            .Where(r => recipe.Id == r.Id)
+            .Include(r => r.User)
+            .Include(r => r.Tags)
+            .Include(r => r.Categories)
+            .Include(r => r.Ingredients)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (recipeEntity is null)
+            throw new ArgumentException($"Recipe with id = {recipe.Id} doesn't exist");
+
+        UpdateRecipeRecord(recipeEntity, recipe);
+        RemoveDeleted(recipeEntity, recipe);
+        UpdateIngredients(recipeEntity, recipe);
+        AddIngredients(recipeEntity, recipe);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    private static void UpdateRecipeRecord(
+        RecipeEntity entity,
+        Core.Models.Recipe recipe)
+    {
+        entity.Title = recipe.Title;
+        entity.CookingTime = recipe.CookingTime;
+        entity.Description = recipe.Description;
+        entity.Instructions = recipe.Instructions;
+        entity.AmountServings = recipe.AmountServings;
+        entity.PreparationTime = recipe.PreparationTime;
+    }
+
+    private void RemoveDeleted(RecipeEntity entity, Core.Models.Recipe recipe)
+    {
+        var removeCategories = entity.Categories
+            .Where(rc => recipe.Categories.Exists(c => c.Id == rc.Id))
+            .ToList();
+
+        foreach (var recipeCategoryEntity in entity.Categories)
+        {
+            if (recipe.Categories.Exists(c => c.Id != recipeCategoryEntity.Id))
+                entity.Categories.Remove(recipeCategoryEntity);
+        }
+
+        foreach (var recipeTagEntity in entity.Tags)
+        {
+            if (recipe.Tags.Exists(c => c.Id != recipeTagEntity.Id))
+                entity.Tags.Remove(recipeTagEntity);
+        }
+
+        foreach (var recipeIngredientEntity in entity.Ingredients)
+        {
+            if (recipe.Ingredients.Exists(c => c.Id != recipeIngredientEntity.Id))
+                entity.Ingredients.Remove(recipeIngredientEntity);
+        }
+    }
+
+    private void UpdateIngredients(RecipeEntity entity, Core.Models.Recipe recipe)
+    {
+        foreach (var recipeIngredientEntity in entity.Ingredients)
+        {
+            var ingredient = recipe.Ingredients
+                .First(c => c.Id == recipeIngredientEntity.Id);
+
+            var ingredientEntity = mapper.Map<IngredientEntity>(ingredient.Ingredient);
+
+            recipeIngredientEntity.Unit = ingredient.Unit;
+            recipeIngredientEntity.Quantity = ingredient.Quantity;
+            recipeIngredientEntity.Ingredient = ingredientEntity;
+        }
+    }
+
+    private void AddIngredients(RecipeEntity entity, Core.Models.Recipe recipe)
+    {
+        var addIngredients = recipe.Ingredients.Where(i => i.Id == 0);
+
+        foreach (var ingredient in addIngredients)
+        {
+            var ingredientEntity = mapper.Map<RecipeIngredientEntity>(ingredient);
+            entity.Ingredients.Add(ingredientEntity);
+        }
     }
 
     public async Task RemoveAsync(
