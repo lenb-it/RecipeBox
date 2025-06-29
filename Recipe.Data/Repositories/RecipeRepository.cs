@@ -45,67 +45,120 @@ public class RecipeRepository(
         return mapper.Map<Core.Models.Recipe>(recipe);
     }
 
-    // todo check the method for correctness
     public async Task AddAsync(
         Core.Models.Recipe recipe,
         Guid ownerId,
         CancellationToken cancellationToken = default)
     {
-        var userOwner = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == ownerId, cancellationToken)
-            ?? throw new NotFoundException($"User with id:\'{ownerId}\' not found");
+        using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
 
-        var recipeEntity = mapper.Map<RecipeEntity>(recipe);
-        recipeEntity.User = userOwner;
+        try
+        {
+            var userOwner = await dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id == ownerId, cancellationToken)
+                ?? throw new NotFoundException($"User with id:\'{ownerId}\' not found");
 
-        //await AddTags(recipeEntity, cancellationToken);
-        //await AddCategoriesToRecipe1(recipeEntity, cancellationToken);
-        await AddIngredients(recipeEntity, cancellationToken);
+            var recipeEntity = mapper.Map<RecipeEntity>(recipe);
+            recipeEntity.User = userOwner;
 
-        await dbContext.Recipes.AddAsync(recipeEntity, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+            var categories = recipeEntity.Categories;
+            var tags = recipeEntity.Tags;
+            var ingredients = recipeEntity.Ingredients;
+
+            recipeEntity.Categories = new List<CategoryEntity>();
+            recipeEntity.Tags = new List<TagEntity>();
+            recipeEntity.Ingredients = new List<RecipeIngredientEntity>();
+
+            await dbContext.Recipes.AddAsync(recipeEntity, cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await UpdateRecipeTags(recipeEntity, tags, cancellationToken);
+            await UpdateRecipeCategories(recipeEntity, categories, cancellationToken);
+            await UpdateRecipeIngredients(recipeEntity, ingredients, cancellationToken);
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            // todo добавить норм тип исключения
+            throw new Exception("Error add recipe", ex);
+        }
     }
 
-    private async Task AddTags(
+    private async Task UpdateRecipeTags(
         RecipeEntity recipeEntity,
+        ICollection<TagEntity> tags,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var tagsIds = tags
+            .Select(i => i.Id)
+            .ToList();
+
+        var existingTags = await dbContext.Tags
+            .Where(i => tagsIds.Contains(i.Id))
+            .ToListAsync(cancellationToken);
+
+        await dbContext.RecipeTags
+            .Where(rc => rc.RecipeId == recipeEntity.Id)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        recipeEntity.Tags = existingTags;
     }
 
-    private async Task AddCategoriesToRecipe1(
+    private async Task UpdateRecipeCategories(
         RecipeEntity recipeEntity,
+        ICollection<CategoryEntity> categories,
         CancellationToken cancellationToken)
     {
-        var addRecipeCategories = new List<RecipeCategoryEntity>();
+        var categoriesIds = categories
+            .Select(i => i.Id)
+            .ToList();
 
-        var categoriesIds = recipeEntity
-            .Categories
-            .Select(i => i.Id);
-
-        var categories = await dbContext.Categories
+        var existingCategories = await dbContext.Categories
             .Where(i => categoriesIds.Contains(i.Id))
             .ToListAsync(cancellationToken);
 
-        foreach (CategoryEntity recipeCategory in recipeEntity.Categories)
-        {
-            var category = categories.FirstOrDefault(
-                i => recipeCategory.Id == i.Id);
+        await dbContext.RecipeCategories
+            .Where(rc => rc.RecipeId == recipeEntity.Id)
+            .ExecuteDeleteAsync(cancellationToken);
 
-            if (category is null)
+        recipeEntity.Categories = existingCategories;
+    }
+
+    private async Task UpdateRecipeIngredients(
+        RecipeEntity recipeEntity,
+        ICollection<RecipeIngredientEntity> ingredients,
+        CancellationToken cancellationToken)
+    {
+        await dbContext.RecipeIngredients
+            .Where(rc => rc.RecipeId == recipeEntity.Id)
+            .ExecuteDeleteAsync(cancellationToken);
+
+        var newRecipeIngredients = new List<RecipeIngredientEntity>();
+
+        foreach (var ingredient in ingredients)
+        {
+            var existingIngredient = await dbContext.Ingredients
+                .FirstOrDefaultAsync(i => i.Id == ingredient.IngredientId, cancellationToken);
+
+            if (existingIngredient is null)
                 continue;
 
-            addRecipeCategories.Add(new RecipeCategoryEntity
+            newRecipeIngredients.Add(new RecipeIngredientEntity
             {
-                CategoryId = category.Id,
                 RecipeId = recipeEntity.Id,
+                IngredientId = existingIngredient.Id,
+                Quantity = ingredient.Quantity,
+                Unit = ingredient.Unit,
+                Ingredient = existingIngredient, 
+                Recipe = recipeEntity
             });
         }
-        
-        recipeEntity.Categories = categories;
-        //await dbContext.RecipeCategories.AddRangeAsync(
-        //    addRecipeCategories,
-        //    cancellationToken);
+
+        await dbContext.RecipeIngredients.AddRangeAsync(newRecipeIngredients, cancellationToken);
+        recipeEntity.Ingredients = newRecipeIngredients;
     }
 
     private async Task AddIngredients(

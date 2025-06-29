@@ -19,8 +19,9 @@ public class RecipeContext(
     internal DbSet<IngredientEntity> Ingredients { get; set; } = null!;
     internal DbSet<TagEntity> Tags { get; set; } = null!;
     internal DbSet<RecipeRatingEntity> Ratings { get; set; } = null!;
-    //internal DbSet<RecipeIngredientEntity> RecipeIngredients { get; set; } = null!;
-    //internal DbSet<RecipeCategoryEntity> RecipeCategories { get; set; } = null!;
+    internal DbSet<RecipeIngredientEntity> RecipeIngredients { get; set; } = null!;
+    internal DbSet<RecipeCategoryEntity> RecipeCategories { get; set; } = null!;
+    internal DbSet<RecipeTagEntity> RecipeTags { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
