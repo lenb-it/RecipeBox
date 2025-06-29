@@ -16,6 +16,7 @@ Log.Logger = new LoggerConfiguration()
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions)));
+services.AddHttpContextAccessor();
 
 services.AddDbContext(configuration, environment);
 

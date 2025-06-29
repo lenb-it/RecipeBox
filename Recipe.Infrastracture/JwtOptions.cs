@@ -4,5 +4,5 @@ public class JwtOptions
 {
     public string SecretKey { get; set; } = null!;
 
-    public int ExpiresHours { get; set; }
+    public int ExpireHours { get; set; }
 }

@@ -19,6 +19,8 @@ public class RecipeContext(
     internal DbSet<IngredientEntity> Ingredients { get; set; } = null!;
     internal DbSet<TagEntity> Tags { get; set; } = null!;
     internal DbSet<RecipeRatingEntity> Ratings { get; set; } = null!;
+    //internal DbSet<RecipeIngredientEntity> RecipeIngredients { get; set; } = null!;
+    //internal DbSet<RecipeCategoryEntity> RecipeCategories { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,6 +34,9 @@ public class RecipeContext(
 
         foreach (var entry in entries)
         {
+            if (entry.Entity is not BaseEntity)
+                continue;
+
             if (entry.State == EntityState.Modified)
                 entry.Property(nameof(BaseEntity.UpdateAt)).CurrentValue = DateTime.UtcNow;
 

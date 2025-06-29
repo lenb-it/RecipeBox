@@ -5,7 +5,7 @@ using Recipe.Data.Entities;
 
 namespace Recipe.Data.MappingConfigs;
 
-internal class UserInfoMappingConfig : IRegister
+public class UserInfoMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {

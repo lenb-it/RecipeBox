@@ -9,7 +9,7 @@ internal class RecipeIngredientConfiguration : IEntityTypeConfiguration<RecipeIn
 {
     public void Configure(EntityTypeBuilder<RecipeIngredientEntity> builder)
     {
-        builder.HasKey(ri => ri.Id);
+        builder.HasKey(ri => new { ri.RecipeId, ri.IngredientId });
         builder.ToTable("RecipeIngredients");
         builder.Property(ri => ri.Quantity)
                .IsRequired();

@@ -11,7 +11,7 @@ namespace Recipe.API.EndPoint;
 
 public static class UserEndpoints
 {
-    public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapUserEndpoints(this IEndpointRouteBuilder app)
     {
         var endPoints = app.MapGroup("User");
 
@@ -21,7 +21,7 @@ public static class UserEndpoints
         endPoints.MapPost("Login", LoginAsync)
             .WithSingleValidation<LoginUserRequest>();
 
-        endPoints.MapPost("get", get)
+        endPoints.MapGet("get", get)
             .RequirePermissions(Permission.ReadPost);
 
         return endPoints;

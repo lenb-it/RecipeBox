@@ -36,11 +36,11 @@ public class UsersService(
             bool verifyResult = passwordHasher.Verify(password, user.PasswordHash);
 
             if (!verifyResult)
-                throw new BadAuthException();
+                throw new BadAuthException("Login or password don't match");
 
             return jwtProvider.GenerateToken(user);
         }
-        catch (BaseException) 
+        catch (BaseException)
         {
             throw new BadAuthException("Login or password don't match");
         }

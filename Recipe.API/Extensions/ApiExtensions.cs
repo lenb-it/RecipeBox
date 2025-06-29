@@ -24,6 +24,7 @@ using Recipe.Infrastracture.Constants;
 using Recipe.Infrastracture.Requirements;
 using Recipe.Application.Validators;
 using Recipe.Core.Repositories.Interfaces;
+using Recipe.API.EndPoints;
 
 namespace Recipe.API.Extensions;
 
@@ -31,7 +32,8 @@ public static class ApiExtensions
 {
     public static void AddMappedEndPoins(this IEndpointRouteBuilder app)
     {
-        app.MapUsersEndpoints();
+        app.MapUserEndpoints();
+        app.MapRecipeEndpoints();
     }
 
     public static void AddMappingConfigs(this IServiceCollection services)
@@ -65,6 +67,7 @@ public static class ApiExtensions
 
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ICookieService, CookieService>();
     }
 
     public static void AddValidation(this IServiceCollection services)

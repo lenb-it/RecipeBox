@@ -60,9 +60,10 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
         {
             Message = ExceptionMessage,
             // todo while it's debug
-            Details = !NotDetailExceptions.Contains(exception.GetType()) 
-                ? exception.Message 
-                : "Not details",
+            Details =  exception.Message,
+            //Details = !NotDetailExceptions.Contains(exception.GetType()) 
+            //    ? exception.Message 
+            //    : "Not details",
         };
 
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
